@@ -4,7 +4,7 @@
 
   <groupId>org.microbean</groupId>
   <artifactId>microbean-attributes</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
 
   <name>microBean™ Attributes</name>
   <description>microBean™ Attributes: Utilities for representing certain kinds of annotations.</description>
@@ -43,7 +43,7 @@
     <connection>${scm.url}</connection>
     <developerConnection>${scm.url}</developerConnection>
     <url>https://github.com/microbean/microbean-attributes/</url>
-    <tag>HEAD</tag>
+    <tag>v0.0.1</tag>
   </scm>
 
   <issueManagement>
@@ -80,7 +80,7 @@
     <!-- maven-javadoc-plugin properties -->
     <bottom><![CDATA[Copyright &copy; ${project.inceptionYear}&ndash;{currentYear}, <a href="${project.organization.url}" target="_top">${project.organization.name}</a>. All rights reserved.]]></bottom>
     <doctitle>&lt;a href="${project.url}" target="_top"&gt;&lt;span style="font-family:Lobster, cursive;"&gt;µb&lt;/span&gt; ${project.artifactId}&lt;/a&gt; ${project.version}</doctitle>
-    <links></links>
+    <links />
     <sourcetab>2</sourcetab>
 
     <!-- maven-release-plugin properties -->
