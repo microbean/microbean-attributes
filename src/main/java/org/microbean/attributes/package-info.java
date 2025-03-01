@@ -13,8 +13,10 @@
  */
 
 /**
- * Provides classes and interfaces related to representing annotations.
+ * Provides classes and interfaces related to representing <dfn>attributes</dfn>.
  *
  * @author <a href="https://about.me/lairdnelson" target="_parent">Laird Nelson</a>
+ *
+ * @see org.microbean.attributes.Attributes
  */
 package org.microbean.attributes;

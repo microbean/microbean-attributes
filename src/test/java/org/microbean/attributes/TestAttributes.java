@@ -13,13 +13,11 @@
  */
 package org.microbean.attributes;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class TestAttributes {
 
@@ -29,13 +27,9 @@ final class TestAttributes {
 
   @Test
   final void testAttributes() {
-    final Attributes documented = Attributes.of("Documented");
-    final Attributes qualifier = Attributes.of("Qualifier", documented);
-    final Attributes named = Attributes.of("Named", qualifier);
-    assertFalse(named.isa(named));
-    assertTrue(named.isa(qualifier));
-    assertTrue(qualifier.isa(documented));
-    assertTrue(named.isa(documented));
+    final Attributes documented0 = Attributes.of("Documented");
+    final Attributes documented1 = Attributes.of("Documented", List.of(Attributes.of("Bogus")));
+    assertEquals(documented0, documented1);
   }
 
 }
