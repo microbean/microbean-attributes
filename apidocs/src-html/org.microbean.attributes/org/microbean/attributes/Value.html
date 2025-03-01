@@ -59,28 +59,31 @@
 <span class="source-line-no">046</span><span id="line-46"> *</span>
 <span class="source-line-no">047</span><span id="line-47"> * @see IntValue</span>
 <span class="source-line-no">048</span><span id="line-48"> *</span>
-<span class="source-line-no">049</span><span id="line-49"> * @see LongValue</span>
+<span class="source-line-no">049</span><span id="line-49"> * @see ListValue</span>
 <span class="source-line-no">050</span><span id="line-50"> *</span>
-<span class="source-line-no">051</span><span id="line-51"> * @see ShortValue</span>
+<span class="source-line-no">051</span><span id="line-51"> * @see LongValue</span>
 <span class="source-line-no">052</span><span id="line-52"> *</span>
-<span class="source-line-no">053</span><span id="line-53"> * @see StringValue</span>
-<span class="source-line-no">054</span><span id="line-54"> */</span>
-<span class="source-line-no">055</span><span id="line-55">public sealed interface Value&lt;T extends Value&lt;T&gt;&gt; extends Comparable&lt;T&gt;, Constable</span>
-<span class="source-line-no">056</span><span id="line-56">  permits ArrayValue,</span>
-<span class="source-line-no">057</span><span id="line-57">          Attributes,</span>
-<span class="source-line-no">058</span><span id="line-58">          BooleanValue,</span>
-<span class="source-line-no">059</span><span id="line-59">          ByteValue,</span>
-<span class="source-line-no">060</span><span id="line-60">          CharValue,</span>
-<span class="source-line-no">061</span><span id="line-61">          ClassValue,</span>
-<span class="source-line-no">062</span><span id="line-62">          DoubleValue,</span>
-<span class="source-line-no">063</span><span id="line-63">          EnumValue,</span>
-<span class="source-line-no">064</span><span id="line-64">          FloatValue,</span>
-<span class="source-line-no">065</span><span id="line-65">          IntValue,</span>
-<span class="source-line-no">066</span><span id="line-66">          LongValue,</span>
-<span class="source-line-no">067</span><span id="line-67">          ShortValue,</span>
-<span class="source-line-no">068</span><span id="line-68">          StringValue {</span>
-<span class="source-line-no">069</span><span id="line-69"></span>
-<span class="source-line-no">070</span><span id="line-70">}</span>
+<span class="source-line-no">053</span><span id="line-53"> * @see ShortValue</span>
+<span class="source-line-no">054</span><span id="line-54"> *</span>
+<span class="source-line-no">055</span><span id="line-55"> * @see StringValue</span>
+<span class="source-line-no">056</span><span id="line-56"> */</span>
+<span class="source-line-no">057</span><span id="line-57">public sealed interface Value&lt;T extends Value&lt;T&gt;&gt; extends Comparable&lt;T&gt;, Constable</span>
+<span class="source-line-no">058</span><span id="line-58">  permits ArrayValue,</span>
+<span class="source-line-no">059</span><span id="line-59">          Attributes,</span>
+<span class="source-line-no">060</span><span id="line-60">          BooleanValue,</span>
+<span class="source-line-no">061</span><span id="line-61">          ByteValue,</span>
+<span class="source-line-no">062</span><span id="line-62">          CharValue,</span>
+<span class="source-line-no">063</span><span id="line-63">          ClassValue,</span>
+<span class="source-line-no">064</span><span id="line-64">          DoubleValue,</span>
+<span class="source-line-no">065</span><span id="line-65">          EnumValue,</span>
+<span class="source-line-no">066</span><span id="line-66">          FloatValue,</span>
+<span class="source-line-no">067</span><span id="line-67">          IntValue,</span>
+<span class="source-line-no">068</span><span id="line-68">          ListValue,</span>
+<span class="source-line-no">069</span><span id="line-69">          LongValue,</span>
+<span class="source-line-no">070</span><span id="line-70">          ShortValue,</span>
+<span class="source-line-no">071</span><span id="line-71">          StringValue {</span>
+<span class="source-line-no">072</span><span id="line-72"></span>
+<span class="source-line-no">073</span><span id="line-73">}</span>
 
 
 
