@@ -27,9 +27,9 @@ import org.microbean.constant.Constables;
 
 import static java.lang.constant.ConstantDescs.BSM_INVOKE;
 import static java.lang.constant.ConstantDescs.CD_List;
-import static java.lang.constant.ConstantDescs.CD_Object;
 import static java.lang.constant.DirectMethodHandleDesc.Kind.STATIC;
 import static java.lang.constant.DirectMethodHandleDesc.Kind.VIRTUAL;
+import static java.util.Arrays.asList;
 
 /**
  * A {@link Value} holding other {@link Value}s.
@@ -39,11 +39,25 @@ import static java.lang.constant.DirectMethodHandleDesc.Kind.VIRTUAL;
  * @param value a non-{@code null} array of {@link Value}s
  *
  * @author <a href="https://about.me/lairdnelson" target="_top">Laird Nelson</a>
+ *
+ * @see ListValue
  */
 public final record ArrayValue<T extends Value<T>>(T[] value) implements Value<ArrayValue<T>> {
 
+
+  /*
+   * Static fields.
+   */
+
+
   @SuppressWarnings("rawtypes")
   private static final Value<?>[] EMPTY_VALUE_ARRAY = new Value[0];
+
+
+  /*
+   * Constructors.
+   */
+
 
   /**
    * Creates a new {@link ArrayValue}.
@@ -55,6 +69,12 @@ public final record ArrayValue<T extends Value<T>>(T[] value) implements Value<A
   public ArrayValue {
     value = value.clone();
   }
+
+
+  /*
+   * Instance methods.
+   */
+
 
   @Override // Comparable<ArrayValue<T>>
   public final int compareTo(final ArrayValue<T> other) {
@@ -69,7 +89,7 @@ public final record ArrayValue<T extends Value<T>>(T[] value) implements Value<A
   @Override // Constable
   public final Optional<DynamicConstantDesc<ArrayValue<T>>> describeConstable() {
     final ClassDesc me = ClassDesc.of(this.getClass().getName());
-    return Constables.describeConstable(Arrays.asList(this.value()))
+    return Constables.describeConstable(asList(this.value()))
       .map(valueDesc -> DynamicConstantDesc.of(BSM_INVOKE,
                                                MethodHandleDesc.ofMethod(STATIC,
                                                                          me,
@@ -95,13 +115,11 @@ public final record ArrayValue<T extends Value<T>>(T[] value) implements Value<A
 
   @Override // Record
   public final String toString() {
-    return Arrays.asList(this.value()).toString();
+    return asList(this.value()).toString();
   }
 
   /**
-   * Returns the array of suitably-typed {@link Value}s this {@link ArrayValue} holds.
-   *
-   * <p>No reference to the returned array is kept.</p>
+   * Returns a clone of the array of suitably-typed {@link Value}s this {@link ArrayValue} holds.
    *
    * @return a non-{@code null} array of suitably-typed {@link Value}s
    */
@@ -109,6 +127,12 @@ public final record ArrayValue<T extends Value<T>>(T[] value) implements Value<A
   public final T[] value() {
     return this.value.clone();
   }
+
+
+  /*
+   * Static methods.
+   */
+
 
   /**
    * Returns an {@link ArrayValue} suitable for the supplied argument.

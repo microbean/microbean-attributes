@@ -39,8 +39,8 @@ import static java.lang.constant.DirectMethodHandleDesc.Kind.STATIC;
 import static java.util.Collections.unmodifiableSortedMap;
 
 /**
- * A {@link Value} with a {@linkplain #name() name}, {@linkplain #values() named values}, {@linkplain #notes()
- * non-normative named values}, and {@linkplain #attributes() metadata}.
+ * An {@linkplain Attributed attributed} {@link Value} with a {@linkplain #name() name}, {@linkplain #values() named
+ * values}, and {@linkplain #notes() non-normative named values}.
  *
  * @param name a non-{@code null} name of this {@link Attributes}
  *
@@ -49,12 +49,15 @@ import static java.util.Collections.unmodifiableSortedMap;
  * @param notes a non-{@code null} {@link Map} of non-normative named {@linkplain Value values} associated with this
  * {@link Attributes}
  *
- * @param attributes a non-{@code null} {@link Map} of named metadata associated with this {@link Attributes}
+ * @param attributesMap a non-{@code null} {@link Map} of named metadata associated with this {@link Attributes}
  *
  * @author <a href="https://about.me/lairdnelson" target="_top">Laird Nelson</a>
  */
-public final record Attributes(String name, Map<String, Value<?>> values, Map<String, Value<?>> notes, Map<String, List<Attributes>> attributes)
-  implements Value<Attributes> {
+public final record Attributes(String name,
+                               Map<String, Value<?>> values,
+                               Map<String, Value<?>> notes,
+                               Map<String, List<Attributes>> attributesMap)
+  implements Attributed, Value<Attributes> {
 
   /**
    * Creates a new {@link Attributes}.
@@ -66,7 +69,7 @@ public final record Attributes(String name, Map<String, Value<?>> values, Map<St
    * @param notes a non-{@code null} {@link Map} of non-normative named {@linkplain Value values} associated with this
    * {@link Attributes}
    *
-   * @param attributes a non-{@code null} {@link Map} of named metadata associated with this {@link Attributes}
+   * @param attributesMap a non-{@code null} {@link Map} of named metadata associated with this {@link Attributes}
    *
    * @exception NullPointerException if any argument is {@code null}
    */
@@ -102,24 +105,39 @@ public final record Attributes(String name, Map<String, Value<?>> values, Map<St
     if (notes.containsKey("")) {
       throw new IllegalArgumentException("notes: " + notes);
     }
-    switch (attributes.size()) {
+    switch (attributesMap.size()) {
     case 0:
-      attributes = Map.of();
+      attributesMap = Map.of();
       break;
     case 1:
-      attributes = Map.copyOf(attributes);
+      attributesMap = Map.copyOf(attributesMap);
       break;
     default:
-      final TreeMap<String, List<Attributes>> sortedAttributes = new TreeMap<>();
-      for (final Entry<String, List<Attributes>> e : attributes.entrySet()) {
-        sortedAttributes.put(e.getKey(), List.copyOf(e.getValue()));
+      final TreeMap<String, List<Attributes>> sortedAttributesMap = new TreeMap<>();
+      for (final Entry<String, List<Attributes>> e : attributesMap.entrySet()) {
+        sortedAttributesMap.put(e.getKey(), List.copyOf(e.getValue()));
       }
-      attributes = unmodifiableSortedMap(sortedAttributes);
+      attributesMap = unmodifiableSortedMap(sortedAttributesMap);
       break;
     }
-    if (attributes.containsKey("")) {
-      throw new IllegalArgumentException("attributes: " + attributes);
+    if (attributesMap.containsKey("")) {
+      throw new IllegalArgumentException("attributesMap: " + attributesMap);
     }
+  }
+
+  /**
+   * Returns a {@link List} of {@link Attributes} associated with this {@link Attributes} directly, or an {@linkplain
+   * List#isEmpty() empty <code>List</code>} if there is no such {@link List}.
+   *
+   * @return a non-{@code null} {@link List} of {@link Attributes}
+   *
+   * @see #attributes(String)
+   *
+   * @see #name()
+   */
+  @Override // Attributed
+  public final List<Attributes> attributes() {
+    return this.attributes(this.name());
   }
 
   /**
@@ -133,7 +151,7 @@ public final record Attributes(String name, Map<String, Value<?>> values, Map<St
    * @exception NullPointerException if {@code key} is {@code null}
    */
   public final List<Attributes> attributes(final String key) {
-    return this.attributes().getOrDefault(key, List.of());
+    return this.attributesMap().getOrDefault(key, List.of());
   }
 
   @Override // Comparable<Attributes>
@@ -145,7 +163,7 @@ public final record Attributes(String name, Map<String, Value<?>> values, Map<St
     }
     final int c = (this.name() + this.values()).compareTo(other.name() + other.values());
     // (Possible? that c simply cannot be 0 here?)
-    return c != 0 ? c : (this.notes().toString() + this.attributes()).compareTo(other.notes().toString() + other.attributes());
+    return c != 0 ? c : (this.notes().toString() + this.attributesMap()).compareTo(other.notes().toString() + other.attributesMap());
   }
 
   @Override // Constable
@@ -153,7 +171,7 @@ public final record Attributes(String name, Map<String, Value<?>> values, Map<St
     final ClassDesc me = ClassDesc.of(this.getClass().getName());
     return Constables.describeConstable(this.values())
       .flatMap(valuesDesc -> Constables.describeConstable(this.notes())
-               .flatMap(notesDesc -> Constables.describeConstable(this.attributes())
+               .flatMap(notesDesc -> Constables.describeConstable(this.attributesMap())
                         .map(attributesDesc -> DynamicConstantDesc.of(BSM_INVOKE,
                                                                       MethodHandleDesc.ofMethod(STATIC,
                                                                                                 me,
@@ -214,50 +232,6 @@ public final record Attributes(String name, Map<String, Value<?>> values, Map<St
       hashCode += (127 * e.getKey().hashCode()) ^ e.getValue().hashCode();
     }
     return hashCode;
-  }
-
-  /**
-   * Returns {@code true} if {@code a} appears in the {@link #attributes(String) attributes} of this {@link Attributes},
-   * or any of their attributes.
-   *
-   * <p>Notably, this method does <em>not</em> return {@code true} if this {@link Attributes} {@linkplain
-   * #equals(Object) is equal to} {@code a}.</p>
-   *
-   * @param a an {@link Attributes}; must not be {@code null}
-   *
-   * @return {@code true} if {@code a} appears in the {@link #attributes(String) attributes} of this {@link Attributes},
-   * or any of their attributes
-   *
-   * @exception NullPointerException if {@code a} is {@code null}
-   *
-   * @see #attributes(String)
-   *
-   * @see #equals(Object)
-   */
-  public final boolean isa(final Attributes a) {
-    return this.attributesSatisfy(a::equals);
-  }
-
-  /**
-   * Returns {@code true} if any of the {@linkplain #attributes(String) attributes} reachable from this {@link
-   * Attributes} satisfy the supplied {@link Predicate}.
-   *
-   * @param p a {@link Predicate}; must not be {@code null}
-   *
-   * @return {@code true} if any of the {@linkplain #attributes(String) attributes} reachable from this {@link
-   * Attributes} satisfy the supplied {@link Predicate}; {@code false} otherwise
-   *
-   * @exception NullPointerException if {@code p} is {@code null}
-   *
-   * @see #attributes(String)
-   */
-  public final boolean attributesSatisfy(final Predicate<? super Attributes> p) {
-    for (final Attributes md : this.attributes(this.name())) {
-      if (p.test(md) || md.attributesSatisfy(p)) {
-        return true;
-      }
-    }
-    return false;
   }
 
   /**

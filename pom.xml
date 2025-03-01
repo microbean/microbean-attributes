@@ -4,7 +4,7 @@
 
   <groupId>org.microbean</groupId>
   <artifactId>microbean-attributes</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
 
   <name>microBean™ Attributes</name>
   <description>microBean™ Attributes: Utilities for representing certain kinds of annotations.</description>

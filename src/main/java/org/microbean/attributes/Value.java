@@ -46,6 +46,8 @@ import java.lang.constant.Constable;
  *
  * @see IntValue
  *
+ * @see ListValue
+ *
  * @see LongValue
  *
  * @see ShortValue
@@ -63,6 +65,7 @@ public sealed interface Value<T extends Value<T>> extends Comparable<T>, Constab
           EnumValue,
           FloatValue,
           IntValue,
+          ListValue,
           LongValue,
           ShortValue,
           StringValue {
