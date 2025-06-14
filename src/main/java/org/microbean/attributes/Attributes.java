@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -42,14 +43,20 @@ import static java.util.Collections.unmodifiableSortedMap;
  * An {@linkplain Attributed attributed} {@link Value} with a {@linkplain #name() name}, {@linkplain #values() named
  * values}, and {@linkplain #notes() non-normative named values}.
  *
- * @param name a non-{@code null} name of this {@link Attributes}
+ * @param name a non-{@code null} name of this {@link Attributes}; names that begin with the {@code $} character are
+ * reserved for internal use
  *
- * @param values a non-{@code null} {@link Map} of named {@linkplain Value values} associated with this {@link Attributes}
+ * @param values a non-{@code null} {@link Map} of named {@linkplain Value values} associated with this {@link
+ * Attributes}; keys in this {@link Map} that begin with the {@code $} character are reserved for internal use
  *
  * @param notes a non-{@code null} {@link Map} of non-normative named {@linkplain Value values} associated with this
- * {@link Attributes}
+ * {@link Attributes}; keys in this {@link Map} that begin with the {@code $} character are reserved for internal use
  *
- * @param attributesMap a non-{@code null} {@link Map} of named metadata associated with this {@link Attributes}
+ * @param attributesMap a non-{@code null} {@link Map} of named metadata associated with this {@link Attributes}; any
+ * {@link List} stored under a key that is equal to the supplied {@code name} is considered to be a list of {@link
+ * Attributes} pertaining to this {@link Attributes} itself; other keys are normally (but are not required to be) the
+ * names of keys in the supplied {@code values} or {@code notes} {@link Map}s; keys that begin with the {@code $}
+ * character are reserved for internal use
  *
  * @author <a href="https://about.me/lairdnelson" target="_top">Laird Nelson</a>
  */
@@ -64,12 +71,17 @@ public final record Attributes(String name,
    *
    * @param name a non-{@code null} name of this {@link Attributes}
    *
-   * @param values a non-{@code null} {@link Map} of named {@linkplain Value values} associated with this {@link Attributes}
+   * @param values a non-{@code null} {@link Map} of named {@linkplain Value values} associated with this {@link
+   * Attributes}; keys in this {@link Map} that begin with the {@code $} character are reserved for internal use
    *
    * @param notes a non-{@code null} {@link Map} of non-normative named {@linkplain Value values} associated with this
-   * {@link Attributes}
+   * {@link Attributes}; keys in this {@link Map} that begin with the {@code $} character are reserved for internal use
    *
-   * @param attributesMap a non-{@code null} {@link Map} of named metadata associated with this {@link Attributes}
+   * @param attributesMap a non-{@code null} {@link Map} of named metadata associated with this {@link Attributes}; any
+   * {@link List} stored under a key that is equal to the supplied {@code name} is considered to be a list of {@link
+   * Attributes} pertaining to this {@link Attributes} itself; other keys are normally (but are not required to be) the
+   * names of keys in the supplied {@code values} or {@code notes} {@link Map}s; keys in this {@link Map} that begin
+   * with the {@code $} character are reserved for internal use
    *
    * @exception NullPointerException if any argument is {@code null}
    */
@@ -232,6 +244,42 @@ public final record Attributes(String name,
       hashCode += (127 * e.getKey().hashCode()) ^ e.getValue().hashCode();
     }
     return hashCode;
+  }
+
+  @Override // Record
+  public final String toString() {
+    final StringBuilder sb = new StringBuilder();
+    sb.append("@").append(this.name());
+    final Map<String, Value<?>> values = this.values();
+    final Map<String, Value<?>> notes = this.notes();
+    if (values.isEmpty() && notes.isEmpty()) {
+      return sb.toString();
+    }
+    sb.append("(");
+    if (!values.isEmpty()) {
+      final Iterator<Entry<String, Value<?>>> i = values.entrySet().iterator();
+      while (i.hasNext()) {
+        final Entry<String, Value<?>> e = i.next();
+        sb.append(e.getKey()).append(" = ").append(e.getValue());
+        if (i.hasNext()) {
+          sb.append(", ");
+        }
+      }
+    }
+    if (!notes.isEmpty()) {
+      sb.append(" (");
+      final Iterator<Entry<String, Value<?>>> i = notes.entrySet().iterator();
+      while (i.hasNext()) {
+        final Entry<String, Value<?>> e = i.next();
+        sb.append(e.getKey()).append(" = ").append(e.getValue());
+        if (i.hasNext()) {
+          sb.append(", ");
+        }
+      }
+      sb.append(")");
+    }
+    sb.append(")");
+    return sb.toString();
   }
 
   /**
