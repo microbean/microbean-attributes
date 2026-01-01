@@ -41,86 +41,91 @@
 <span class="source-line-no">028</span><span id="line-28">/**</span>
 <span class="source-line-no">029</span><span id="line-29"> * A {@link Value} whose value is a {@code Class}.</span>
 <span class="source-line-no">030</span><span id="line-30"> *</span>
-<span class="source-line-no">031</span><span id="line-31"> * @param value the value</span>
+<span class="source-line-no">031</span><span id="line-31"> * @param &lt;T&gt; the type of the class modeled by this {@link ClassValue}</span>
 <span class="source-line-no">032</span><span id="line-32"> *</span>
-<span class="source-line-no">033</span><span id="line-33"> * @author &lt;a href="https://about.me/lairdnelson" target="_top"&gt;Laird Nelson&lt;/a&gt;</span>
-<span class="source-line-no">034</span><span id="line-34"> */</span>
-<span class="source-line-no">035</span><span id="line-35">public final record ClassValue(Class&lt;?&gt; value) implements Value&lt;ClassValue&gt; {</span>
-<span class="source-line-no">036</span><span id="line-36"></span>
-<span class="source-line-no">037</span><span id="line-37">  public static final ClassValue CLASS_JAVA_LANG_OBJECT = new ClassValue(Object.class);</span>
+<span class="source-line-no">033</span><span id="line-33"> * @param value the value</span>
+<span class="source-line-no">034</span><span id="line-34"> *</span>
+<span class="source-line-no">035</span><span id="line-35"> * @author &lt;a href="https://about.me/lairdnelson" target="_top"&gt;Laird Nelson&lt;/a&gt;</span>
+<span class="source-line-no">036</span><span id="line-36"> */</span>
+<span class="source-line-no">037</span><span id="line-37">public final record ClassValue&lt;T&gt;(Class&lt;T&gt; value) implements Value&lt;ClassValue&lt;T&gt;&gt; {</span>
 <span class="source-line-no">038</span><span id="line-38"></span>
-<span class="source-line-no">039</span><span id="line-39">  public static final ClassValue CLASS_JAVA_LANG_STRING = new ClassValue(String.class);</span>
+<span class="source-line-no">039</span><span id="line-39">  public static final ClassValue&lt;Object&gt; CLASS_JAVA_LANG_OBJECT = new ClassValue&lt;&gt;(Object.class);</span>
 <span class="source-line-no">040</span><span id="line-40"></span>
-<span class="source-line-no">041</span><span id="line-41">  /**</span>
-<span class="source-line-no">042</span><span id="line-42">   * Creates a new {@link ClassValue}.</span>
-<span class="source-line-no">043</span><span id="line-43">   *</span>
-<span class="source-line-no">044</span><span id="line-44">   * @param value the value; must not be {@code null}</span>
+<span class="source-line-no">041</span><span id="line-41">  public static final ClassValue&lt;String&gt; CLASS_JAVA_LANG_STRING = new ClassValue&lt;&gt;(String.class);</span>
+<span class="source-line-no">042</span><span id="line-42"></span>
+<span class="source-line-no">043</span><span id="line-43">  /**</span>
+<span class="source-line-no">044</span><span id="line-44">   * Creates a new {@link ClassValue}.</span>
 <span class="source-line-no">045</span><span id="line-45">   *</span>
-<span class="source-line-no">046</span><span id="line-46">   * @exception NullPointerException if {@code value} is {@code null}</span>
-<span class="source-line-no">047</span><span id="line-47">   */</span>
-<span class="source-line-no">048</span><span id="line-48">  public ClassValue {</span>
-<span class="source-line-no">049</span><span id="line-49">    Objects.requireNonNull(value, "value");</span>
-<span class="source-line-no">050</span><span id="line-50">  }</span>
-<span class="source-line-no">051</span><span id="line-51"></span>
-<span class="source-line-no">052</span><span id="line-52">  @Override // Comparable&lt;ClassValue&gt;</span>
-<span class="source-line-no">053</span><span id="line-53">  public final int compareTo(final ClassValue other) {</span>
-<span class="source-line-no">054</span><span id="line-54">    if (other == null) {</span>
-<span class="source-line-no">055</span><span id="line-55">      return -1;</span>
-<span class="source-line-no">056</span><span id="line-56">    } else if (this.equals(other)) {</span>
-<span class="source-line-no">057</span><span id="line-57">      return 0;</span>
-<span class="source-line-no">058</span><span id="line-58">    }</span>
-<span class="source-line-no">059</span><span id="line-59">    return this.value().getName().compareTo(other.value().getName());</span>
-<span class="source-line-no">060</span><span id="line-60">  }</span>
-<span class="source-line-no">061</span><span id="line-61"></span>
-<span class="source-line-no">062</span><span id="line-62">  @Override // Constable</span>
-<span class="source-line-no">063</span><span id="line-63">  public final Optional&lt;DynamicConstantDesc&lt;ClassValue&gt;&gt; describeConstable() {</span>
-<span class="source-line-no">064</span><span id="line-64">    final ClassDesc cd = ClassDesc.of(this.getClass().getName());</span>
-<span class="source-line-no">065</span><span id="line-65">    return</span>
-<span class="source-line-no">066</span><span id="line-66">      Optional.of(DynamicConstantDesc.of(BSM_INVOKE,</span>
-<span class="source-line-no">067</span><span id="line-67">                                         MethodHandleDesc.ofMethod(STATIC,</span>
-<span class="source-line-no">068</span><span id="line-68">                                                                   cd,</span>
-<span class="source-line-no">069</span><span id="line-69">                                                                   "of",</span>
-<span class="source-line-no">070</span><span id="line-70">                                                                   MethodTypeDesc.of(cd,</span>
-<span class="source-line-no">071</span><span id="line-71">                                                                                     CD_Class)),</span>
-<span class="source-line-no">072</span><span id="line-72">                                         this.value().describeConstable().orElseThrow()));</span>
-<span class="source-line-no">073</span><span id="line-73">  }</span>
-<span class="source-line-no">074</span><span id="line-74"></span>
-<span class="source-line-no">075</span><span id="line-75">  @Override // Record</span>
-<span class="source-line-no">076</span><span id="line-76">  public final boolean equals(final Object other) {</span>
-<span class="source-line-no">077</span><span id="line-77">    return</span>
-<span class="source-line-no">078</span><span id="line-78">      other == this ||</span>
-<span class="source-line-no">079</span><span id="line-79">      // Follow java.lang.annotation.Annotation requirements.</span>
-<span class="source-line-no">080</span><span id="line-80">      other != null &amp;&amp; other.getClass() == this.getClass() &amp;&amp; this.value().equals(((ClassValue)other).value());</span>
-<span class="source-line-no">081</span><span id="line-81">  }</span>
-<span class="source-line-no">082</span><span id="line-82"></span>
-<span class="source-line-no">083</span><span id="line-83">  @Override // Record</span>
-<span class="source-line-no">084</span><span id="line-84">  public final int hashCode() {</span>
-<span class="source-line-no">085</span><span id="line-85">    // Follow java.lang.annotation.Annotation requirements.</span>
-<span class="source-line-no">086</span><span id="line-86">    return this.value().hashCode();</span>
-<span class="source-line-no">087</span><span id="line-87">  }</span>
-<span class="source-line-no">088</span><span id="line-88"></span>
-<span class="source-line-no">089</span><span id="line-89">  @Override // Record</span>
-<span class="source-line-no">090</span><span id="line-90">  public final String toString() {</span>
-<span class="source-line-no">091</span><span id="line-91">    return this.value().getName(); // binary name</span>
-<span class="source-line-no">092</span><span id="line-92">  }</span>
-<span class="source-line-no">093</span><span id="line-93"></span>
-<span class="source-line-no">094</span><span id="line-94">  /**</span>
-<span class="source-line-no">095</span><span id="line-95">   * Returns a {@link ClassValue} suitable for the supplied arguments.</span>
-<span class="source-line-no">096</span><span id="line-96">   *</span>
-<span class="source-line-no">097</span><span id="line-97">   * @param c a {@code Class}; must not be {@code null}</span>
+<span class="source-line-no">046</span><span id="line-46">   * @param value the value; must not be {@code null}</span>
+<span class="source-line-no">047</span><span id="line-47">   *</span>
+<span class="source-line-no">048</span><span id="line-48">   * @exception NullPointerException if {@code value} is {@code null}</span>
+<span class="source-line-no">049</span><span id="line-49">   */</span>
+<span class="source-line-no">050</span><span id="line-50">  public ClassValue {</span>
+<span class="source-line-no">051</span><span id="line-51">    Objects.requireNonNull(value, "value");</span>
+<span class="source-line-no">052</span><span id="line-52">  }</span>
+<span class="source-line-no">053</span><span id="line-53"></span>
+<span class="source-line-no">054</span><span id="line-54">  @Override // Comparable&lt;ClassValue&gt;</span>
+<span class="source-line-no">055</span><span id="line-55">  public final int compareTo(final ClassValue&lt;T&gt; other) {</span>
+<span class="source-line-no">056</span><span id="line-56">    if (other == null) {</span>
+<span class="source-line-no">057</span><span id="line-57">      return -1;</span>
+<span class="source-line-no">058</span><span id="line-58">    } else if (this.equals(other)) {</span>
+<span class="source-line-no">059</span><span id="line-59">      return 0;</span>
+<span class="source-line-no">060</span><span id="line-60">    }</span>
+<span class="source-line-no">061</span><span id="line-61">    return this.value().getName().compareTo(other.value().getName());</span>
+<span class="source-line-no">062</span><span id="line-62">  }</span>
+<span class="source-line-no">063</span><span id="line-63"></span>
+<span class="source-line-no">064</span><span id="line-64">  @Override // Constable</span>
+<span class="source-line-no">065</span><span id="line-65">  public final Optional&lt;DynamicConstantDesc&lt;ClassValue&lt;T&gt;&gt;&gt; describeConstable() {</span>
+<span class="source-line-no">066</span><span id="line-66">    final ClassDesc cd = ClassDesc.of(this.getClass().getName());</span>
+<span class="source-line-no">067</span><span id="line-67">    return</span>
+<span class="source-line-no">068</span><span id="line-68">      Optional.of(DynamicConstantDesc.of(BSM_INVOKE,</span>
+<span class="source-line-no">069</span><span id="line-69">                                         MethodHandleDesc.ofMethod(STATIC,</span>
+<span class="source-line-no">070</span><span id="line-70">                                                                   cd,</span>
+<span class="source-line-no">071</span><span id="line-71">                                                                   "of",</span>
+<span class="source-line-no">072</span><span id="line-72">                                                                   MethodTypeDesc.of(cd,</span>
+<span class="source-line-no">073</span><span id="line-73">                                                                                     CD_Class)),</span>
+<span class="source-line-no">074</span><span id="line-74">                                         this.value().describeConstable().orElseThrow()));</span>
+<span class="source-line-no">075</span><span id="line-75">  }</span>
+<span class="source-line-no">076</span><span id="line-76"></span>
+<span class="source-line-no">077</span><span id="line-77">  @Override // Record</span>
+<span class="source-line-no">078</span><span id="line-78">  public final boolean equals(final Object other) {</span>
+<span class="source-line-no">079</span><span id="line-79">    return</span>
+<span class="source-line-no">080</span><span id="line-80">      other == this ||</span>
+<span class="source-line-no">081</span><span id="line-81">      // Follow java.lang.annotation.Annotation requirements.</span>
+<span class="source-line-no">082</span><span id="line-82">      other != null &amp;&amp; other.getClass() == this.getClass() &amp;&amp; this.value().equals(((ClassValue)other).value());</span>
+<span class="source-line-no">083</span><span id="line-83">  }</span>
+<span class="source-line-no">084</span><span id="line-84"></span>
+<span class="source-line-no">085</span><span id="line-85">  @Override // Record</span>
+<span class="source-line-no">086</span><span id="line-86">  public final int hashCode() {</span>
+<span class="source-line-no">087</span><span id="line-87">    // Follow java.lang.annotation.Annotation requirements.</span>
+<span class="source-line-no">088</span><span id="line-88">    return this.value().hashCode();</span>
+<span class="source-line-no">089</span><span id="line-89">  }</span>
+<span class="source-line-no">090</span><span id="line-90"></span>
+<span class="source-line-no">091</span><span id="line-91">  @Override // Record</span>
+<span class="source-line-no">092</span><span id="line-92">  public final String toString() {</span>
+<span class="source-line-no">093</span><span id="line-93">    return this.value().getName(); // binary name</span>
+<span class="source-line-no">094</span><span id="line-94">  }</span>
+<span class="source-line-no">095</span><span id="line-95"></span>
+<span class="source-line-no">096</span><span id="line-96">  /**</span>
+<span class="source-line-no">097</span><span id="line-97">   * Returns a {@link ClassValue} suitable for the supplied arguments.</span>
 <span class="source-line-no">098</span><span id="line-98">   *</span>
-<span class="source-line-no">099</span><span id="line-99">   * @return a non-{@code null} {@link ClassValue}</span>
+<span class="source-line-no">099</span><span id="line-99">   * @param &lt;T&gt; the type of the class</span>
 <span class="source-line-no">100</span><span id="line-100">   *</span>
-<span class="source-line-no">101</span><span id="line-101">   * @exception NullPointerException if {@code c} is {@code null}</span>
-<span class="source-line-no">102</span><span id="line-102">   */</span>
-<span class="source-line-no">103</span><span id="line-103">  public static final ClassValue of(final Class&lt;?&gt; c) {</span>
-<span class="source-line-no">104</span><span id="line-104">    return</span>
-<span class="source-line-no">105</span><span id="line-105">      c == Object.class ? CLASS_JAVA_LANG_OBJECT :</span>
-<span class="source-line-no">106</span><span id="line-106">      c == String.class ? CLASS_JAVA_LANG_STRING :</span>
-<span class="source-line-no">107</span><span id="line-107">      new ClassValue(c);</span>
-<span class="source-line-no">108</span><span id="line-108">  }</span>
-<span class="source-line-no">109</span><span id="line-109"></span>
-<span class="source-line-no">110</span><span id="line-110">}</span>
+<span class="source-line-no">101</span><span id="line-101">   * @param c a {@code Class}; must not be {@code null}</span>
+<span class="source-line-no">102</span><span id="line-102">   *</span>
+<span class="source-line-no">103</span><span id="line-103">   * @return a non-{@code null} {@link ClassValue}</span>
+<span class="source-line-no">104</span><span id="line-104">   *</span>
+<span class="source-line-no">105</span><span id="line-105">   * @exception NullPointerException if {@code c} is {@code null}</span>
+<span class="source-line-no">106</span><span id="line-106">   */</span>
+<span class="source-line-no">107</span><span id="line-107">  @SuppressWarnings("unchecked")</span>
+<span class="source-line-no">108</span><span id="line-108">  public static final &lt;T&gt; ClassValue&lt;T&gt; of(final Class&lt;T&gt; c) {</span>
+<span class="source-line-no">109</span><span id="line-109">    return</span>
+<span class="source-line-no">110</span><span id="line-110">      c == Object.class ? (ClassValue&lt;T&gt;)CLASS_JAVA_LANG_OBJECT :</span>
+<span class="source-line-no">111</span><span id="line-111">      c == String.class ? (ClassValue&lt;T&gt;)CLASS_JAVA_LANG_STRING :</span>
+<span class="source-line-no">112</span><span id="line-112">      new ClassValue&lt;&gt;(c);</span>
+<span class="source-line-no">113</span><span id="line-113">  }</span>
+<span class="source-line-no">114</span><span id="line-114"></span>
+<span class="source-line-no">115</span><span id="line-115">}</span>
 
 
 
