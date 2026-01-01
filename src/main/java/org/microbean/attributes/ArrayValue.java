@@ -289,6 +289,8 @@ public final record ArrayValue<T extends Value<T>>(T[] value) implements Value<A
   /**
    * Returns an {@link ArrayValue} suitable for the supplied argument.
    *
+   * @param <T> the type of the class
+   *
    * @param values a non-{@code null} array of values
    *
    * @return a non-{@code null} {@link ArrayValue}
@@ -297,12 +299,14 @@ public final record ArrayValue<T extends Value<T>>(T[] value) implements Value<A
    *
    * @see #of(Value[])
    */
-  public static final ArrayValue<ClassValue> of(final Class<?>... values) {
-    final var va = new ClassValue[values.length];
+  @SafeVarargs
+  public static final <T> ArrayValue<ClassValue<T>> of(final Class<T>... values) {
+    @SuppressWarnings({ "rawtypes", "unchecked"})
+    final ClassValue<T>[] va = new ClassValue[values.length];
     for (int i = 0; i < values.length; i++) {
       va[i] = ClassValue.of(values[i]);
     }
-    return new ArrayValue<>(va);
+    return new ArrayValue<ClassValue<T>>(va);
   }
 
   /**

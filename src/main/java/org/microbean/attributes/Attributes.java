@@ -1,6 +1,6 @@
 /* -*- mode: Java; c-basic-offset: 2; indent-tabs-mode: nil; coding: utf-8-unix -*-
  *
- * Copyright © 2025 microBean™.
+ * Copyright © 2025–2026 microBean™.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -38,6 +38,8 @@ import static java.lang.constant.ConstantDescs.CD_String;
 import static java.lang.constant.DirectMethodHandleDesc.Kind.STATIC;
 
 import static java.util.Collections.unmodifiableSortedMap;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * An {@linkplain Attributed attributed} {@link Value} with a {@linkplain #name() name}, {@linkplain #values() named
@@ -86,7 +88,7 @@ public final record Attributes(String name,
    * @exception NullPointerException if any argument is {@code null}
    */
   public Attributes {
-    Objects.requireNonNull(name, "name");
+    requireNonNull(name, "name");
     switch (values.size()) {
     case 0:
       values = Map.of();
