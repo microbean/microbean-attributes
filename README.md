@@ -27,7 +27,7 @@ dependency:
   <groupId>org.microbean</groupId>
   <artifactId>microbean-attributes</artifactId>
   <!-- Always check https://search.maven.org/artifact/org.microbean/microbean-attributes for up-to-date available versions. -->
-  <version>0.0.5</version>
+  <version>0.0.6</version>
 </dependency>
 ```
 

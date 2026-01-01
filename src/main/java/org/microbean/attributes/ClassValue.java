@@ -28,15 +28,17 @@ import static java.lang.constant.DirectMethodHandleDesc.Kind.STATIC;
 /**
  * A {@link Value} whose value is a {@code Class}.
  *
+ * @param <T> the type of the class modeled by this {@link ClassValue}
+ *
  * @param value the value
  *
  * @author <a href="https://about.me/lairdnelson" target="_top">Laird Nelson</a>
  */
-public final record ClassValue(Class<?> value) implements Value<ClassValue> {
+public final record ClassValue<T>(Class<T> value) implements Value<ClassValue<T>> {
 
-  public static final ClassValue CLASS_JAVA_LANG_OBJECT = new ClassValue(Object.class);
+  public static final ClassValue<Object> CLASS_JAVA_LANG_OBJECT = new ClassValue<>(Object.class);
 
-  public static final ClassValue CLASS_JAVA_LANG_STRING = new ClassValue(String.class);
+  public static final ClassValue<String> CLASS_JAVA_LANG_STRING = new ClassValue<>(String.class);
 
   /**
    * Creates a new {@link ClassValue}.
@@ -50,7 +52,7 @@ public final record ClassValue(Class<?> value) implements Value<ClassValue> {
   }
 
   @Override // Comparable<ClassValue>
-  public final int compareTo(final ClassValue other) {
+  public final int compareTo(final ClassValue<T> other) {
     if (other == null) {
       return -1;
     } else if (this.equals(other)) {
@@ -60,7 +62,7 @@ public final record ClassValue(Class<?> value) implements Value<ClassValue> {
   }
 
   @Override // Constable
-  public final Optional<DynamicConstantDesc<ClassValue>> describeConstable() {
+  public final Optional<DynamicConstantDesc<ClassValue<T>>> describeConstable() {
     final ClassDesc cd = ClassDesc.of(this.getClass().getName());
     return
       Optional.of(DynamicConstantDesc.of(BSM_INVOKE,
@@ -94,17 +96,20 @@ public final record ClassValue(Class<?> value) implements Value<ClassValue> {
   /**
    * Returns a {@link ClassValue} suitable for the supplied arguments.
    *
+   * @param <T> the type of the class
+   *
    * @param c a {@code Class}; must not be {@code null}
    *
    * @return a non-{@code null} {@link ClassValue}
    *
    * @exception NullPointerException if {@code c} is {@code null}
    */
-  public static final ClassValue of(final Class<?> c) {
+  @SuppressWarnings("unchecked")
+  public static final <T> ClassValue<T> of(final Class<T> c) {
     return
-      c == Object.class ? CLASS_JAVA_LANG_OBJECT :
-      c == String.class ? CLASS_JAVA_LANG_STRING :
-      new ClassValue(c);
+      c == Object.class ? (ClassValue<T>)CLASS_JAVA_LANG_OBJECT :
+      c == String.class ? (ClassValue<T>)CLASS_JAVA_LANG_STRING :
+      new ClassValue<>(c);
   }
 
 }

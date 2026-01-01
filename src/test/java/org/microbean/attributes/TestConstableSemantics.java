@@ -74,8 +74,8 @@ final class TestConstableSemantics {
 
   @Test
   final void testClassValue() throws ReflectiveOperationException {
-    final ClassValue v = ClassValue.of(Long.class);
-    final ClassValue v0 = v.describeConstable().orElseThrow().resolveConstantDesc(lookup());
+    final ClassValue<Long> v = ClassValue.of(Long.class);
+    final ClassValue<Long> v0 = v.describeConstable().orElseThrow().resolveConstantDesc(lookup());
     assertEquals(v, v0);
     assertNotSame(v, v0);
   }

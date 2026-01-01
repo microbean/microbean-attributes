@@ -1,6 +1,6 @@
 /* -*- mode: Java; c-basic-offset: 2; indent-tabs-mode: nil; coding: utf-8-unix -*-
  *
- * Copyright © 2025 microBean™.
+ * Copyright © 2025–2026 microBean™.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -25,10 +25,40 @@ import java.util.List;
 public interface Attributed {
 
   /**
-   * Returns a non-{@code null}, immutable {@link List} of {@link Attributes}.
+   * Returns a non-{@code null}, immutable, determinate {@link List} of {@link Attributes}.
    *
-   * @return a non-{@code null}, immutable {@link List} of {@link Attributes}
+   * @return a non-{@code null}, immutable, determinate {@link List} of {@link Attributes}
    */
   public List<Attributes> attributes();
+
+  /**
+   * Returns {@code true} if and only if this {@link Attributed} implementation is equal to the supplied {@link Object},
+   * following the general contract of {@link Object#equals(Object)} <strong>with additional requirements</strong>.
+   *
+   * <p>The return value of any invocation of the {@link #attributes()} method must not be factored into equality
+   * computations or undefined behavior may result.</p>
+   *
+   * @param other the {@link Object} to test; may be {@code null} in which case {@code false} will be returned
+   *
+   * @return {@code true} if and only if this {@link Attributed} implementation is equal to the supplied {@link Object}
+   *
+   * @see #attributes()
+   *
+   * @see #hashCode()
+   */
+  @Override
+  public boolean equals(Object other);
+
+  /**
+   * Returns a hashcode for this {@link Attributed} implementation <strong>that is not based on the return value of an
+   * invocation of the {@link #attributes()} method</strong>.
+   *
+   * @return a hashcode for this {@link Attributed}
+   *
+   * @see #attributes()
+   *
+   * @see #equals(Object)
+   */
+  public int hashCode();
 
 }
